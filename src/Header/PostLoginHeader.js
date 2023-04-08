@@ -11,6 +11,7 @@ import {
 import { AccountCircle } from "@material-ui/icons";
 import logo from "../Assets/png/logo.png";
 import { Box, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,6 +34,7 @@ function PostLoginHeader() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const isLoggedIn = localStorage.getItem("token") ? true : false;
+  const navigate = useNavigate();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -40,6 +42,10 @@ function PostLoginHeader() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleNavigateLogin = () => {
+    navigate("login");
   };
 
   return (
@@ -86,7 +92,9 @@ function PostLoginHeader() {
             ) : (
               <>
                 {" "}
-                <Button color="inherit">Login</Button>
+                <Button color="inherit" onClick={handleNavigateLogin}>
+                  Login
+                </Button>
               </>
             )}
           </div>
