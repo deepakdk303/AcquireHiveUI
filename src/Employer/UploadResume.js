@@ -9,6 +9,7 @@ import { Document, Page, pdfjs } from "react-pdf";
 // import pdfjs from "pdfjs-dist";
 import Iframe from "react-iframe";
 import { useLocation } from "react-router-dom";
+import { postUploadFileResume } from "../Service/EmployerService";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,10 +50,13 @@ const UploadResume = () => {
 
   const [numPages, setNumPages] = useState(null);
   // const [pageNumber, setPageNumber] = useState(1);
+  const [candidateDetail, setCandidateDetail] = useState({});
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
+
+  console.log("candidateDetail", candidateDetail);
 
   useEffect(() => {
     pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -71,8 +75,23 @@ const UploadResume = () => {
     setFile(null);
   };
 
-  const handleUploadFile = () => {
+  const handleOpenForm = () => {
     setIsDetailModalOpen(true);
+  };
+
+  const handleSubmitUploadFile = async () => {
+    let formData = new FormData();
+    formData.append("file", file);
+    const responseData = await postUploadFileResume(formData);
+    console.log("responseData", responseData);
+    // setCandidateDetail(responseData?.data?.data)
+
+    if (responseData.status === 200) {
+      // setCandidateList(responseData?.data?.data);
+      setCandidateDetail(responseData?.data?.data);
+      handleOpenForm();
+    }
+    // setIsDetailModalOpen(true);
   };
 
   const handleDetailModalClose = () => {
@@ -90,10 +109,17 @@ const UploadResume = () => {
         <ResumeDetailModal onClose={handleDetailModalClose} />
       </Modal> */}
       <Container maxWidth="lg" sx={{ py: 3 }}>
-        <ResumeDetailModal
-          isOpen={isDetailModalOpen}
-          onClose={handleDetailModalClose}
-        />
+        {isDetailModalOpen && (
+          <>
+            <ResumeDetailModal
+              isOpen={isDetailModalOpen}
+              onClose={handleDetailModalClose}
+              candidateDetail={candidateDetail}
+              jobId={state?.id}
+            />
+          </>
+        )}
+
         <Box>
           <input
             // accept="image/*"
@@ -141,12 +167,12 @@ const UploadResume = () => {
             <Typography variant="body1">{file.name}</Typography>
           </Box>
         )} */}
-          <Box
-            marginTop={2}
-            className={classes.btnContainer}
-            onClick={handleUploadFile}
-          >
-            <Button variant="contained" color="primary">
+          <Box marginTop={2} className={classes.btnContainer}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmitUploadFile}
+            >
               Upload
             </Button>
           </Box>

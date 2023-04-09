@@ -4,19 +4,23 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { SnackbarProvider } from "notistack";
+import { Provider } from "react-redux";
+import { store } from "./Store/Store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <SnackbarProvider
-      maxSnack={6}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "right",
-      }}
-    >
-      <App />
-    </SnackbarProvider>
+    <Provider store={store}>
+      <SnackbarProvider
+        maxSnack={6}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+      >
+        <App />
+      </SnackbarProvider>
+    </Provider>
   </>
 );
 

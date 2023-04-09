@@ -21,6 +21,10 @@ import {
   Typography,
 } from "@mui/material";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
+import {
+  postProcessCandidate,
+  postUploadFileResume,
+} from "../../Service/EmployerService";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -66,16 +70,22 @@ const skills = [
   "Express",
 ];
 
-const ResumeDetailModal = ({ isOpen, onClose }) => {
+const ResumeDetailModal = ({ isOpen, onClose, candidateDetail, jobId }) => {
   const classes = useStyles();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    skills: [],
-    phone: "",
+    fullName: candidateDetail?.fullName,
+    email: candidateDetail?.email,
+    skills: candidateDetail?.skills,
+    phone: candidateDetail?.mobile,
   });
 
-  const [personName, setPersonName] = React.useState([]);
+  console.log("jobI==========>", jobId);
+
+  console.log("candidateDetail", candidateDetail);
+
+  const [personName, setPersonName] = React.useState(
+    candidateDetail?.skills ? candidateDetail?.skills : []
+  );
 
   const handleMultiChange = (event) => {
     const {
@@ -95,10 +105,32 @@ const ResumeDetailModal = ({ isOpen, onClose }) => {
     setFormData({ ...formData, skills: event.target.value });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(formData);
+    let bodyData = {
+      fullName: formData.fullName,
+      mobile: formData.phone,
+      email: formData.email,
+      score: formData.score,
+      status: formData.status,
+      skills: formData.skills,
+      total_years_of_experiance: formData.total_years_of_experiance,
+      relavant_experiance: formData.relavant_experiance,
+      job_id: jobId,
+    };
+    const responseData = await postProcessCandidate(bodyData);
+    console.log("responseData", responseData);
+    // setCandidateDetail(responseData?.data?.data)
+
+    if (responseData.status === 200) {
+      // setCandidateList(responseData?.data?.data);
+      // setCandidateDetail(responseData?.data?.data);
+      // handleOpenForm();
+    }
   };
+
+  console.log("formData", formData);
 
   return (
     <>
@@ -130,15 +162,16 @@ const ResumeDetailModal = ({ isOpen, onClose }) => {
             {/* <h2 id="simple-modal-title">Enter your information</h2> */}
             <form onSubmit={handleSubmit}>
               <TextField
-                id="name"
+                id="fullName"
                 label="Name"
-                name="name"
-                value={formData.name}
+                name="fullName"
+                value={formData.fullName}
                 onChange={handleChange}
                 required
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}
+                disabled
               />
               <br />
               <TextField
@@ -152,6 +185,7 @@ const ResumeDetailModal = ({ isOpen, onClose }) => {
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}
+                disabled
               />
               <br />
               {/* <Select
@@ -173,7 +207,7 @@ const ResumeDetailModal = ({ isOpen, onClose }) => {
           ))}
         </Select> */}
 
-              <FormControl sx={{ mt: 2 }} fullWidth>
+              <FormControl sx={{ mt: 2, maxWidth: 300 }} fullWidth>
                 <InputLabel id="demo-multiple-checkbox-label">Skill</InputLabel>
                 <Select
                   labelId="demo-multiple-checkbox-label"
@@ -184,6 +218,7 @@ const ResumeDetailModal = ({ isOpen, onClose }) => {
                   input={<OutlinedInput label="Skill" />}
                   renderValue={(selected) => selected.join(", ")}
                   MenuProps={MenuProps}
+                  disabled
                 >
                   {skills.map((name) => (
                     <MenuItem key={name} value={name}>
@@ -205,8 +240,32 @@ const ResumeDetailModal = ({ isOpen, onClose }) => {
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}
+                disabled
               />
               <br />
+              <TextField
+                id="total_years_of_experiance"
+                label="total_years_of_experiance"
+                name="total_years_of_experiance"
+                value={formData.total_years_of_experiance}
+                onChange={handleChange}
+                required
+                variant="outlined"
+                fullWidth
+                sx={{ mt: 2 }}
+              />
+              <br />
+              <TextField
+                id="relavant_experiance"
+                label="relavant_experiance"
+                name="relavant_experiance"
+                value={formData.relavant_experiance}
+                onChange={handleChange}
+                required
+                variant="outlined"
+                fullWidth
+                sx={{ mt: 2 }}
+              />
               <Button
                 type="submit"
                 variant="contained"

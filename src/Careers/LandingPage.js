@@ -719,7 +719,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import landingPageLogo from "../Assets/png/landingPageBg.png";
+import landingPageLogo from "../Assets/png/landingPageBg.jpg";
 import logo from "../Assets/png/logo.png";
 import PostLoginHeader from "../Header/PostLoginHeader";
 import { getAllJobs } from "../Service/EmployerService";

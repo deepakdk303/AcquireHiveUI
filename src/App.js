@@ -13,6 +13,10 @@ import UploadResume from "./Employer/UploadResume";
 import LandingPage from "./Careers/LandingPage";
 import Questionnaire from "./Employer/Questionnaire";
 import "./App.css";
+import { Backdrop, CircularProgress } from "@mui/material";
+import { useState } from "react";
+import { store } from "./Store/Store";
+import { useSelector } from "react-redux";
 
 const RouterUse = () => {
   let isCheckAccessToken = localStorage.getItem("token");
@@ -47,8 +51,25 @@ const RouterUse = () => {
 };
 
 function App() {
+  // const [isLoaderOpen, setIsLoaderOpen] = useState(true);
+  // const count = store.getState().count;
+  console.log("store.getState()", store.getState());
+  const isLoaderOpen = store.getState().isLoaderOpen;
+  const currentUser = useSelector((state) => state);
+  console.log("currentUser", currentUser);
+
+  // const handleClose = () => {
+  //   setIsLoaderOpen(false);
+  // };
   return (
     <div className="App">
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoaderOpen}
+        // onClick={handleClose}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <BrowserRouter>
         <RouterUse />
       </BrowserRouter>
