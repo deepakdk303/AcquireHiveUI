@@ -67,6 +67,19 @@ export const postProcessCandidate = (formData) => {
   }
 };
 
+export const postSendEmail = (formData) => {
+  store.dispatch(mainStoreSlice.actions.openLoader());
+  try {
+    const response = axiosInstance.post("/sendEmail", formData);
+    return response;
+  } catch (error) {
+    store.dispatch(mainStoreSlice.actions.closeLoader());
+    return error;
+  } finally {
+    // store.dispatch(mainStoreSlice.actions.closeLoader());
+  }
+};
+
 // axiosInstance.get("/get_jobs").then((response) => {
 //   console.log(response.data);
 // });

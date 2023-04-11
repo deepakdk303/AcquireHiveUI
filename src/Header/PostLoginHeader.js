@@ -48,6 +48,10 @@ function PostLoginHeader() {
     navigate("login");
   };
 
+  const handleSearchLink = () => {
+    navigate("employer/search");
+  };
+
   return (
     <div className={classes.root}>
       <AppBar position="static" className={classes.appBar}>
@@ -85,7 +89,7 @@ function PostLoginHeader() {
                   onClose={handleClose}
                 >
                   <MenuItem onClick={handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={handleClose}>My account</MenuItem>
+                  <MenuItem onClick={handleSearchLink}>Dashboard</MenuItem>
                   <MenuItem onClick={handleClose}>Logout</MenuItem>
                 </Menu>
               </>

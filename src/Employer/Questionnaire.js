@@ -219,6 +219,8 @@ import {
   Button,
 } from "@material-ui/core";
 import { Box, Paper } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
+import { postProcessCandidate } from "../Service/EmployerService";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -290,15 +292,19 @@ const Quiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptionId, setSelectedOptionId] = useState([]);
   const [timer, setTimer] = useState(300); // 5 minutes in seconds
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const [question, setQuestions] = useState(
+    state?.questions ? state?.questions : []
+  );
+  console.log("state", state);
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
       event.preventDefault();
       event.returnValue = "";
     };
-
     window.addEventListener("beforeunload", handleBeforeUnload);
-
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
@@ -314,6 +320,7 @@ const Quiz = () => {
   const handleOptionChange = (event, i) => {
     const newSelectedOptionId = [...selectedOptionId];
     newSelectedOptionId[i] = event.target.value;
+    console.log("event.target.value", event.target.value);
     console.log("newSelectedOptionId", newSelectedOptionId);
     setSelectedOptionId(newSelectedOptionId);
   };
@@ -326,7 +333,7 @@ const Quiz = () => {
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const SubmittedAnswerCheck = [];
 
     questions.forEach((item, index) => {
@@ -340,6 +347,25 @@ const Quiz = () => {
     const answerPercentage =
       (trueValues.length / SubmittedAnswerCheck.length) * 100;
     console.log("answerPercentage", answerPercentage);
+    const { candidateDetail } = state;
+    let dataForm = {
+      fullName: candidateDetail.fullName,
+      mobile: candidateDetail.mobile,
+      email: candidateDetail.email,
+      score: answerPercentage,
+      status: candidateDetail.status,
+      skills: candidateDetail.skills,
+      total_years_of_experiance: candidateDetail.total_years_of_experiance,
+      relavant_experiance: candidateDetail.relavant_experiance,
+      job_id: candidateDetail?.jobId,
+    };
+    const responseData = await postProcessCandidate(dataForm);
+    console.log("responseData", responseData);
+    // setCandidateDetail(responseData?.data?.data)
+
+    if (responseData.status === 200) {
+      navigate("/");
+    }
   };
 
   return (
@@ -347,7 +373,7 @@ const Quiz = () => {
       <Typography variant="h5" component="h1" gutterBottom>
         React JS Quiz
       </Typography>
-      {questions.map((item, i) => {
+      {question.map((item, i) => {
         return (
           <>
             <Paper className={classes.question} elevation={1} sx={{ p: 2 }}>
@@ -355,7 +381,7 @@ const Quiz = () => {
                 Question {item.id}
               </Typography>
               <Typography variant="body1" component="p">
-                {item.text}
+                {item.question}
               </Typography>
               <FormControl component="fieldset" className={classes.formControl}>
                 <RadioGroup
@@ -369,7 +395,7 @@ const Quiz = () => {
                       key={option.id}
                       value={option.id}
                       control={<Radio />}
-                      label={option.text}
+                      label={option.answer}
                     />
                   ))}
                 </RadioGroup>

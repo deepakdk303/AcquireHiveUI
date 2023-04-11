@@ -1,4 +1,4 @@
-import { Box, Button, Container, TextField } from "@mui/material";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { Tabs, Tab } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -58,12 +58,22 @@ const Employer = () => {
     // navigate("/employer/upload");
   };
 
+  const handleStatusChange = (event, index) => {
+    const newRows = [...candidateList];
+    newRows[index].status = event.target.value;
+    console.log("newRows", newRows);
+    setCandidateList(newRows);
+  };
+
   const handleChangeDescription = (e) => {
     setDescription(e.target.value);
   };
 
   return (
     <>
+      <Typography variant="h4" gutterBottom>
+        Create a Job Post
+      </Typography>
       <TextField
         id="outlined-multiline-static"
         label="Job Description"
@@ -94,7 +104,12 @@ const Employer = () => {
           <JobListTable jobList={jobList} />
         </>
       )}
-      {selectedTab === 1 && <Candidate candidateList={candidateList} />}
+      {selectedTab === 1 && (
+        <Candidate
+          candidateList={candidateList}
+          onHandleStatusChange={handleStatusChange}
+        />
+      )}
     </>
   );
 };

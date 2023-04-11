@@ -18,92 +18,13 @@ import {
   Paper,
 } from "@material-ui/core";
 import EmailIcon from "@mui/icons-material/Email";
+import { postSendEmail } from "../../Service/EmployerService";
+import useNotification from "../../Hooks/useNotification";
 
-const Candidate = ({ candidateList }) => {
+const Candidate = ({ candidateList, onHandleStatusChange }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [rows, setRows] = useState([
-    {
-      id: 1,
-      name: "John",
-      mobile: "active",
-      email: "test@gmail.com",
-      score: "9.5",
-      status: "selected",
-    },
-    {
-      id: 2,
-      name: "Jane",
-      mobile: "active",
-      email: "Jane@gmail.com",
-      score: "9.5",
-      status: "selected",
-    },
-    {
-      id: 3,
-      name: "Bob",
-      mobile: "active",
-      email: "Bob@gmail.com",
-      score: "9.5",
-      status: "selected",
-    },
-    {
-      id: 4,
-      name: "Alice",
-      mobile: "active",
-      email: "Alice@gmail.com",
-      score: "9.5",
-      status: "rejected",
-    },
-    {
-      id: 5,
-      name: "Tom",
-      mobile: "active",
-      email: "Tom@gmail.com",
-      score: "9.5",
-      status: "selected",
-    },
-    {
-      id: 6,
-      name: "Jerry",
-      mobile: "active",
-      email: "Jerry@gmail.com",
-      score: "9.5",
-      status: "selected",
-    },
-    {
-      id: 7,
-      name: "Mike",
-      mobile: "active",
-      email: "Mike@gmail.com",
-      score: "9.5",
-      status: "selected",
-    },
-    {
-      id: 8,
-      name: "Sara",
-      mobile: "active",
-      email: "Sara@gmail.com",
-      score: "9.5",
-      status: "rejected",
-    },
-    {
-      id: 9,
-      name: "Emily",
-      mobile: "active",
-      email: "Emily@gmail.com",
-      score: "9.5",
-      status: "selected",
-    },
-    {
-      id: 10,
-      name: "David",
-      mobile: "active",
-      email: "David@gmail.com",
-      score: "9.5",
-      status: "selected",
-    },
-  ]);
+  const [sendNotification] = useNotification();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -115,13 +36,31 @@ const Candidate = ({ candidateList }) => {
   };
 
   const handleStatusChange = (event, index) => {
-    const newRows = [...rows];
-    newRows[index].status = event.target.value;
-    setRows(newRows);
+    // const newRows = [...rows];
+    // newRows[index].status = event.target.value;
+    // console.log("newRows", newRows);
+    // setRows(newRows);
+    onHandleStatusChange(event, index);
   };
 
-  const handleSendEmail = (i) => {
-    console.log("rows[i].status", rows[i]);
+  const handleSendEmail = async (i) => {
+    console.log("rows[i].status", candidateList[i]);
+    const formData = {
+      fullName: candidateList[i].full_name,
+      email: candidateList[i].email,
+      status: candidateList[i].status,
+    };
+    const responseData = await postSendEmail(formData);
+    if (responseData.status === 200) {
+      sendNotification({
+        message: "Email sent successfully..",
+        variant: "success",
+      });
+      // setJobList(responseData?.data?.data);
+      // getJobList();
+      // sendNotification({ message: "Added Success fully", variant: "success" });
+      // setDescription("");
+    }
   };
 
   return (
@@ -170,10 +109,18 @@ const Candidate = ({ candidateList }) => {
                           value={row.status}
                           label="Status"
                           onChange={(e) => handleStatusChange(e, i)}
-                          disabled={row.status === "enrolled"}
+                          // disabled={row.status === "enrolled"}
                         >
-                          <MenuItem value={"enrolled"}>Enrolled</MenuItem>
-                          <MenuItem value={"rejected"}>Rejected</MenuItem>
+                          <MenuItem selected value={"enrolled"}>
+                            Enrolled
+                          </MenuItem>
+                          <MenuItem value={"next_level"}>Second Level</MenuItem>
+                          <MenuItem value={"give_offer"}>
+                            Offer Interview Letter
+                          </MenuItem>
+                          <MenuItem value={"unsuccessfull"}>
+                            Unsuccessfull application Letter
+                          </MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -196,7 +143,7 @@ const Candidate = ({ candidateList }) => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={rows.length}
+            count={candidateList.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

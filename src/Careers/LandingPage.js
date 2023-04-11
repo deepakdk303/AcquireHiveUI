@@ -882,7 +882,7 @@ export default function LandingPage() {
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar> */}
-      <PostLoginHeader />
+      {/* <PostLoginHeader /> */}
       <Box className={classes.appContainer}>
         <Container maxWidth="lg">
           <Paper className={classes.paper + " " + classes.bgTransparent}>
@@ -923,12 +923,13 @@ export default function LandingPage() {
           color="textSecondary"
           component="p"
         >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed varius,
-          sapien vel euismod porttitor, elit nulla laoreet arcu, at bibendum
-          urna turpis vel justo. Proin vel quam dui. Curabitur vel justo in
-          pellentesque viverra quis at mauris. Sed pharetra quam non orci
-          bibendum, a imperdiet turpis euismod. Sed venenatis vitae sapien quis
-          accumsan.
+          The goal of this project is to create a job recruitment application
+          that streamlines the recruitment process by automating the initial
+          screening of resumes, identifying key skills, and generating
+          skill-based interview questions. The application will be a web-based
+          platform that allows job seekers to upload their resumes and provides
+          recruiters with a tool to quickly and efficiently identify qualified
+          candidates for job openings.
         </Typography>
       </footer>
     </div>

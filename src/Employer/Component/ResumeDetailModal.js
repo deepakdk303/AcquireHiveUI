@@ -25,6 +25,7 @@ import {
   postProcessCandidate,
   postUploadFileResume,
 } from "../../Service/EmployerService";
+import { useNavigate } from "react-router-dom";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -72,6 +73,7 @@ const skills = [
 
 const ResumeDetailModal = ({ isOpen, onClose, candidateDetail, jobId }) => {
   const classes = useStyles();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: candidateDetail?.fullName,
     email: candidateDetail?.email,
@@ -124,6 +126,12 @@ const ResumeDetailModal = ({ isOpen, onClose, candidateDetail, jobId }) => {
     // setCandidateDetail(responseData?.data?.data)
 
     if (responseData.status === 200) {
+      navigate("/questionnaire", {
+        state: {
+          questions: responseData?.data?.data,
+          candidateDetail: bodyData,
+        },
+      });
       // setCandidateList(responseData?.data?.data);
       // setCandidateDetail(responseData?.data?.data);
       // handleOpenForm();

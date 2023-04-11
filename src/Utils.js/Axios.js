@@ -2,7 +2,7 @@ import axios from "axios";
 import { mainStoreSlice, store } from "../Store/Store";
 
 const axiosInstance = axios.create({
-  baseURL: "http://ec2-13-53-137-36.eu-north-1.compute.amazonaws.com:8081/",
+  baseURL: "http://13.53.137.36:8081/",
 });
 
 axiosInstance.interceptors.request.use(

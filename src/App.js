@@ -17,11 +17,26 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { store } from "./Store/Store";
 import { useSelector } from "react-redux";
+import LandingPageMain from "./Careers/LandingPageMain";
 
 const RouterUse = () => {
   let isCheckAccessToken = localStorage.getItem("token");
   let routes = useRoutes([
-    { path: "/", element: <LandingPage /> },
+    {
+      path: "/",
+      element: <LandingPageMain />,
+      children: [
+        { path: "/", element: <LandingPage /> },
+        {
+          path: "upload",
+          element: <UploadResume />,
+        },
+        {
+          path: "questionnaire",
+          element: <Questionnaire />,
+        },
+      ],
+    },
     {
       path: "upload",
       element: <UploadResume />,
@@ -65,7 +80,7 @@ function App() {
     <div className="App">
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoaderOpen}
+        open={currentUser?.isLoaderOpen}
         // onClick={handleClose}
       >
         <CircularProgress color="inherit" />
